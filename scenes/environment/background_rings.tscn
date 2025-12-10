@@ -1,21 +1,59 @@
-[gd_scene load_steps=6 format=3 uid="uid://g7zm1o2ptx8uq"]
+[gd_scene load_steps=8 format=3 uid="uid://g7zm1o2ptx8uq"]
 
 [ext_resource type="Script" path="res://scripts/environment/background_ring.gd" id="1_ring"]
 [ext_resource type="Texture2D" path="res://assets/textures/backgrounds/treeline_placeholder.png" id="2_treeline"]
-[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/hills_placeholder.png" id="3_hills"]
-[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/mountains_placeholder.png" id="4_mountains"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/mountain_1.png" id="4_mountains"]
+[ext_resource type="Texture2D" path="res://assets/textures/sky/big_cloud_1.png" id="5_bigcloud1"]
+[ext_resource type="Texture2D" path="res://assets/textures/sky/big_cloud_2.png" id="6_bigcloud2"]
 
 [node name="BackgroundRings" type="Node3D"]
 
+# Distant clouds behind mountains - big_cloud textures are ~1.13:1 aspect (nearly square)
+# Radius 480, circumference = 3016, height 300
+# Cylinder aspect = 3016/300 = 10.05
+# For correct aspect with 1 horizontal wrap: uv_scale_y = 10.05/1.13 = 8.9
+[node name="DistantClouds2" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 480.0
+ring_height = 300.0
+texture = ExtResource("6_bigcloud2")
+scroll_speed = 0.003
+y_offset = 20.0
+use_cloud_shader = true
+cloud_opacity = 0.35
+render_priority = -60
+uv_scale_x = 1.0
+uv_scale_y = 8.9
+
+[node name="DistantClouds1" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 450.0
+ring_height = 280.0
+texture = ExtResource("5_bigcloud1")
+scroll_speed = 0.005
+y_offset = 30.0
+use_cloud_shader = true
+cloud_opacity = 0.4
+render_priority = -55
+uv_scale_x = 1.0
+uv_scale_y = 8.9
+
+# Mountains - mountain_1.png is 1578x502 (aspect 3.14:1)
+# Radius 400, circumference = 2513, height 500
+# For 4 mountain repeats with correct aspect:
+# Each tile width = 628.3, for aspect 3.14: tile_height = 628.3/3.14 = 200
+# So: uv_scale_y = 500/200 = 2.5
 [node name="MountainsRing" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 400.0
 ring_height = 500.0
 texture = ExtResource("4_mountains")
-fog_amount = 0.6
+fog_amount = 0.5
 scroll_speed = 0.0
 y_offset = -30.0
 render_priority = -30
+uv_scale_x = 4.0
+uv_scale_y = 2.5
 
 [node name="MistFar" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
@@ -27,16 +65,6 @@ cloud_opacity = 0.3
 mist_gradient_power = 1.2
 render_priority = -25
 
-[node name="HillsRing" type="MeshInstance3D" parent="."]
-script = ExtResource("1_ring")
-ring_radius = 180.0
-ring_height = 40.0
-texture = ExtResource("3_hills")
-fog_amount = 0.4
-scroll_speed = 0.0
-y_offset = -5.0
-render_priority = -20
-
 [node name="MistMid" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 150.0
@@ -47,6 +75,11 @@ cloud_opacity = 0.25
 mist_gradient_power = 1.5
 render_priority = -15
 
+# Treeline - treeline_placeholder.png is 256x64 (aspect 4:1)
+# Radius 100, circumference = 628, height 18
+# For 4 repeats with correct aspect:
+# Tile width = 157, for aspect 4: tile_height = 39.25
+# uv_scale_y = 18/39.25 = 0.46 (shows partial texture height - avoids stretching)
 [node name="TreelineRing" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 100.0
@@ -56,6 +89,8 @@ fog_amount = 0.2
 scroll_speed = 0.0
 y_offset = 0.0
 render_priority = -10
+uv_scale_x = 4.0
+uv_scale_y = 0.46
 
 [node name="MistNear" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")

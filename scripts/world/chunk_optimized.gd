@@ -26,8 +26,8 @@ static func _load_resources() -> void:
 	if _resources_loaded:
 		return
 
-	_tree_texture = load("res://assets/textures/sprites/tree_placeholder.png")
-	_bush_texture = load("res://assets/textures/sprites/bush_placeholder.png")
+	_tree_texture = load("res://assets/textures/sprites/tree.tga")
+	_bush_texture = load("res://assets/textures/sprites/bush.tga")
 
 	# Create shared materials
 	var shader := load("res://shaders/billboard_y.gdshader")
@@ -42,7 +42,7 @@ static func _load_resources() -> void:
 
 	_terrain_material = ShaderMaterial.new()
 	_terrain_material.shader = load("res://shaders/unlit_terrain.gdshader")
-	_terrain_material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_placeholder.png"))
+	_terrain_material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_checkered.tga"))
 	_terrain_material.set_shader_parameter("uv_scale", 8.0)
 
 	_resources_loaded = true
@@ -59,23 +59,25 @@ func _setup_terrain() -> void:
 	_terrain_mesh.material_override = _terrain_material
 
 func _setup_multimeshes() -> void:
-	# Tree MultiMesh
+	# Tree MultiMesh - tree.tga is 384x512 (aspect 0.75)
+	# Base height 8.0, width = 8.0 * 0.75 = 6.0
 	_tree_multimesh = MultiMeshInstance3D.new()
 	add_child(_tree_multimesh)
 
 	var tree_mm := MultiMesh.new()
 	tree_mm.transform_format = MultiMesh.TRANSFORM_3D
-	tree_mm.mesh = _create_quad_mesh(Vector2(4.0, 8.0))  # Tree size
+	tree_mm.mesh = _create_quad_mesh(Vector2(6.0, 8.0))  # Correct aspect ratio
 	_tree_multimesh.multimesh = tree_mm
 	_tree_multimesh.material_override = _tree_material
 
-	# Bush MultiMesh
+	# Bush MultiMesh - bush.tga is 128x96 (aspect 1.33)
+	# Base height 1.5, width = 1.5 * 1.33 = 2.0
 	_bush_multimesh = MultiMeshInstance3D.new()
 	add_child(_bush_multimesh)
 
 	var bush_mm := MultiMesh.new()
 	bush_mm.transform_format = MultiMesh.TRANSFORM_3D
-	bush_mm.mesh = _create_quad_mesh(Vector2(2.0, 1.0))  # Bush size
+	bush_mm.mesh = _create_quad_mesh(Vector2(2.0, 1.5))  # Correct aspect ratio
 	_bush_multimesh.multimesh = bush_mm
 	_bush_multimesh.material_override = _bush_material
 

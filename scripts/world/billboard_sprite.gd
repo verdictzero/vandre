@@ -5,6 +5,7 @@ extends MeshInstance3D
 	set(value):
 		sprite_texture = value
 		_update_material()
+		_update_mesh_size()
 
 @export var sprite_scale: float = 1.0:
 	set(value):
@@ -20,13 +21,22 @@ func _ready() -> void:
 func _setup_mesh() -> void:
 	# Create a quad mesh
 	var quad := QuadMesh.new()
-	quad.size = Vector2(2.0, 2.0) * sprite_scale
+	quad.size = _calculate_size()
 	quad.orientation = PlaneMesh.FACE_Z
 	mesh = quad
 
+func _calculate_size() -> Vector2:
+	# Calculate size preserving texture aspect ratio
+	# Height is the base dimension (sprite_scale), width derived from aspect
+	if sprite_texture:
+		var tex_size := sprite_texture.get_size()
+		var aspect := tex_size.x / tex_size.y  # width / height
+		return Vector2(sprite_scale * aspect, sprite_scale)
+	return Vector2(sprite_scale, sprite_scale)
+
 func _update_mesh_size() -> void:
 	if mesh and mesh is QuadMesh:
-		(mesh as QuadMesh).size = Vector2(2.0, 2.0) * sprite_scale
+		(mesh as QuadMesh).size = _calculate_size()
 
 func _update_material() -> void:
 	if not _material:

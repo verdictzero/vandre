@@ -19,9 +19,9 @@ func _ready() -> void:
 
 static func _load_textures() -> void:
 	if not tree_texture:
-		tree_texture = load("res://assets/textures/sprites/tree_placeholder.png")
+		tree_texture = load("res://assets/textures/sprites/tree.tga")
 	if not bush_texture:
-		bush_texture = load("res://assets/textures/sprites/bush_placeholder.png")
+		bush_texture = load("res://assets/textures/sprites/bush.tga")
 
 func _setup_terrain() -> void:
 	_terrain_mesh = MeshInstance3D.new()
@@ -37,7 +37,7 @@ func _setup_terrain() -> void:
 	# Create material
 	var material := ShaderMaterial.new()
 	material.shader = load("res://shaders/unlit_terrain.gdshader")
-	material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_placeholder.png"))
+	material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_checkered.tga"))
 	material.set_shader_parameter("uv_scale", 8.0)
 	_terrain_mesh.material_override = material
 
@@ -56,17 +56,20 @@ func initialize(coord: Vector2i) -> void:
 func _spawn_vegetation() -> void:
 	_load_textures()
 
-	# Spawn trees (sparse)
+	# Spawn trees (sparse) - tree.tga is 384x512, taller than wide
+	# Scale is height in world units
 	var tree_count := _rng.randi_range(3, 8)
 	for i in tree_count:
-		_spawn_billboard(tree_texture, _rng.randf_range(2.0, 4.0), true)
+		var height := _rng.randf_range(6.0, 10.0)
+		_spawn_billboard(tree_texture, height)
 
-	# Spawn bushes (medium density)
+	# Spawn bushes (medium density) - bush.tga is 128x96, wider than tall
 	var bush_count := _rng.randi_range(8, 15)
 	for i in bush_count:
-		_spawn_billboard(bush_texture, _rng.randf_range(0.8, 1.5), false)
+		var height := _rng.randf_range(1.0, 2.0)
+		_spawn_billboard(bush_texture, height)
 
-func _spawn_billboard(tex: Texture2D, scale_factor: float, is_tree: bool) -> void:
+func _spawn_billboard(tex: Texture2D, height: float) -> void:
 	var billboard: Node3D = BILLBOARD_SCENE.instantiate()
 	add_child(billboard)
 
@@ -75,12 +78,12 @@ func _spawn_billboard(tex: Texture2D, scale_factor: float, is_tree: bool) -> voi
 	var x := _rng.randf_range(-half_size, half_size)
 	var z := _rng.randf_range(-half_size, half_size)
 
-	# Y position based on type (trees are taller)
-	var y := scale_factor if is_tree else scale_factor * 0.5
+	# Y position: half the height (quad is centered, so offset to sit on ground)
+	var y := height * 0.5
 
 	billboard.position = Vector3(x, y, z)
 	billboard.set_texture(tex)
-	billboard.set_scale_factor(scale_factor)
+	billboard.set_scale_factor(height)
 
 	_vegetation.append(billboard)
 

@@ -57,6 +57,16 @@ extends MeshInstance3D
 		render_priority = value
 		_update_material()
 
+@export var uv_scale_x: float = 1.0:
+	set(value):
+		uv_scale_x = value
+		_update_material()
+
+@export var uv_scale_y: float = 1.0:
+	set(value):
+		uv_scale_y = value
+		_update_material()
+
 var _material: ShaderMaterial
 
 func _ready() -> void:
@@ -88,10 +98,14 @@ func _update_material() -> void:
 		_material.shader = load("res://shaders/clouds.gdshader")
 		_material.set_shader_parameter("scroll_speed", scroll_speed)
 		_material.set_shader_parameter("opacity", cloud_opacity)
+		_material.set_shader_parameter("uv_scale_x", uv_scale_x)
+		_material.set_shader_parameter("uv_scale_y", uv_scale_y)
 	else:
 		_material.shader = load("res://shaders/background_ring.gdshader")
 		_material.set_shader_parameter("fog_amount", fog_amount)
 		_material.set_shader_parameter("scroll_speed", scroll_speed)
+		_material.set_shader_parameter("uv_scale_x", uv_scale_x)
+		_material.set_shader_parameter("uv_scale_y", uv_scale_y)
 
 	if texture:
 		_material.set_shader_parameter("albedo_texture", texture)

@@ -1,39 +1,58 @@
-[gd_scene load_steps=4 format=3 uid="uid://h8zn2p3quy9vr"]
+[gd_scene load_steps=5 format=3 uid="uid://h8zn2p3quy9vr"]
 
 [ext_resource type="Script" path="res://scripts/environment/background_ring.gd" id="1_ring"]
-[ext_resource type="Texture2D" path="res://assets/textures/sky/clouds_placeholder.png" id="2_clouds"]
+[ext_resource type="Texture2D" path="res://assets/textures/sky/small_cloud_1.png" id="2_smallcloud1"]
+[ext_resource type="Texture2D" path="res://assets/textures/sky/small_cloud_2.png" id="3_smallcloud2"]
 
 [node name="CloudLayers" type="Node3D"]
 
+# Small cloud textures are ~1.1:1 aspect (nearly square)
+# For proper aspect ratio on wide cylinders, we need significant vertical tiling
+
+# HighClouds: radius 500, height 200
+# Circumference = 3142, cylinder aspect = 15.7
+# For texture aspect 1.09: uv_scale_y = 15.7/1.09 = 14.4
 [node name="HighClouds" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 500.0
-ring_height = 60.0
-texture = ExtResource("2_clouds")
+ring_height = 200.0
+texture = ExtResource("2_smallcloud1")
 scroll_speed = 0.005
 y_offset = 120.0
 use_cloud_shader = true
 cloud_opacity = 0.3
 render_priority = -50
+uv_scale_x = 1.0
+uv_scale_y = 14.4
 
+# MidClouds: radius 450, height 180
+# Circumference = 2827, cylinder aspect = 15.7
+# For texture aspect 1.12: uv_scale_y = 15.7/1.12 = 14.0
 [node name="MidClouds" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 450.0
-ring_height = 50.0
-texture = ExtResource("2_clouds")
+ring_height = 180.0
+texture = ExtResource("3_smallcloud2")
 scroll_speed = 0.01
 y_offset = 80.0
 use_cloud_shader = true
 cloud_opacity = 0.4
 render_priority = -45
+uv_scale_x = 1.0
+uv_scale_y = 14.0
 
+# LowClouds: radius 400, height 160
+# Circumference = 2513, cylinder aspect = 15.7
+# For texture aspect 1.09: uv_scale_y = 15.7/1.09 = 14.4
 [node name="LowClouds" type="MeshInstance3D" parent="."]
 script = ExtResource("1_ring")
 ring_radius = 400.0
-ring_height = 40.0
-texture = ExtResource("2_clouds")
+ring_height = 160.0
+texture = ExtResource("2_smallcloud1")
 scroll_speed = 0.02
 y_offset = 50.0
 use_cloud_shader = true
-cloud_opacity = 0.6
+cloud_opacity = 0.5
 render_priority = -40
+uv_scale_x = 1.0
+uv_scale_y = 14.4
