@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://d2yx5k8m6twbp"]
+
+[ext_resource type="Script" path="res://scripts/world/billboard_sprite.gd" id="1_billboard"]
+[ext_resource type="Shader" path="res://shaders/billboard_y.gdshader" id="2_shader"]
+
+[node name="BillboardSprite" type="MeshInstance3D"]
+script = ExtResource("1_billboard")

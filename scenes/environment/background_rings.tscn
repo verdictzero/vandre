@@ -1,0 +1,68 @@
+[gd_scene load_steps=6 format=3 uid="uid://g7zm1o2ptx8uq"]
+
+[ext_resource type="Script" path="res://scripts/environment/background_ring.gd" id="1_ring"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/treeline_placeholder.png" id="2_treeline"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/hills_placeholder.png" id="3_hills"]
+[ext_resource type="Texture2D" path="res://assets/textures/backgrounds/mountains_placeholder.png" id="4_mountains"]
+
+[node name="BackgroundRings" type="Node3D"]
+
+[node name="MountainsRing" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 400.0
+ring_height = 500.0
+texture = ExtResource("4_mountains")
+fog_amount = 0.6
+scroll_speed = 0.0
+y_offset = -30.0
+render_priority = -30
+
+[node name="MistFar" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 320.0
+ring_height = 100.0
+y_offset = -10.0
+use_mist_shader = true
+cloud_opacity = 0.3
+mist_gradient_power = 1.2
+render_priority = -25
+
+[node name="HillsRing" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 180.0
+ring_height = 40.0
+texture = ExtResource("3_hills")
+fog_amount = 0.4
+scroll_speed = 0.0
+y_offset = -5.0
+render_priority = -20
+
+[node name="MistMid" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 150.0
+ring_height = 50.0
+y_offset = -5.0
+use_mist_shader = true
+cloud_opacity = 0.25
+mist_gradient_power = 1.5
+render_priority = -15
+
+[node name="TreelineRing" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 100.0
+ring_height = 18.0
+texture = ExtResource("2_treeline")
+fog_amount = 0.2
+scroll_speed = 0.0
+y_offset = 0.0
+render_priority = -10
+
+[node name="MistNear" type="MeshInstance3D" parent="."]
+script = ExtResource("1_ring")
+ring_radius = 90.0
+ring_height = 25.0
+y_offset = -2.0
+use_mist_shader = true
+cloud_opacity = 0.15
+mist_gradient_power = 2.0
+render_priority = -5

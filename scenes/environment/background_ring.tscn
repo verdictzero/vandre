@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://f6zl0n1osw7tp"]
+
+[ext_resource type="Script" path="res://scripts/environment/background_ring.gd" id="1_ring"]
+
+[node name="BackgroundRing" type="MeshInstance3D"]
+script = ExtResource("1_ring")

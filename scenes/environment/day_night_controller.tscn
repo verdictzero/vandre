@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://e5zk9m0nrw6sp"]
+
+[ext_resource type="Script" path="res://scripts/environment/day_night_controller.gd" id="1_controller"]
+
+[node name="DayNightController" type="Node"]
+script = ExtResource("1_controller")
