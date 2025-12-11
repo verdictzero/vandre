@@ -2,7 +2,7 @@ extends Node3D
 ## Manages terrain chunk loading/unloading based on player position
 
 const CHUNK_SIZE: float = 64.0
-const VIEW_DISTANCE: int = 1  # 3x3 grid = 9 chunks
+const VIEW_DISTANCE: int = 2  # 5x5 grid = 25 chunks (1.5x increased)
 
 const ChunkScript = preload("res://scripts/world/chunk.gd")
 
@@ -13,7 +13,7 @@ var _last_player_chunk: Vector2i = Vector2i(999999, 999999)  # Invalid initial v
 
 func _ready() -> void:
 	# Pre-create some chunks for the pool
-	for i in range(9):
+	for i in range(25):
 		var chunk := _create_new_chunk()
 		chunk.hide()
 		_chunk_pool.append(chunk)

@@ -52,5 +52,5 @@ void fragment() {
 	float fog_factor = smoothstep(FOG_START, FOG_END, depth);
 
 	ALBEDO = mix(color, fog_color.rgb, fog_factor);
-	ALPHA = tex_color.a;
+	ALPHA = 1.0;  // Alpha clip - no variable transparency
 }

@@ -1,7 +1,7 @@
 extends Node
 ## Controls the day/night cycle by updating global shader uniforms
 
-@export var day_length_seconds: float = 600.0  # 10 minutes for full cycle
+@export var day_length_seconds: float = 300.0  # 5 minutes for full cycle (2x speed)
 @export var starting_hour: float = 8.0
 @export var paused: bool = false
 

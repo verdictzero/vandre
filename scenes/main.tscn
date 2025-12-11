@@ -1,27 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://i9ao3q4rvz0ws"]
+[gd_scene load_steps=7 format=3 uid="uid://bjgxwnbarmafa"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
-[ext_resource type="PackedScene" path="res://scenes/world/chunk_manager.tscn" id="3_chunk_manager"]
-[ext_resource type="PackedScene" path="res://scenes/environment/day_night_controller.tscn" id="4_day_night"]
-[ext_resource type="PackedScene" path="res://scenes/environment/background_rings.tscn" id="5_bg_rings"]
-[ext_resource type="PackedScene" path="res://scenes/environment/cloud_layers.tscn" id="6_clouds"]
-[ext_resource type="PackedScene" path="res://scenes/environment/sky_dome.tscn" id="7_sky"]
-[ext_resource type="Script" path="res://scripts/environment/background_follow.gd" id="8_follow"]
+[ext_resource type="Script" uid="uid://bumfte6tc0uc6" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="PackedScene" uid="uid://cjqy6xh8kg5wl" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://c3xlam7tqw4np" path="res://scenes/world/chunk_manager.tscn" id="3_chunk_manager"]
+[ext_resource type="PackedScene" uid="uid://bblpok3e7qb1x" path="res://scenes/environment/day_night_controller.tscn" id="4_day_night"]
+[ext_resource type="PackedScene" uid="uid://lpnlde6qa0x" path="res://scenes/environment/sky_dome.tscn" id="5_sky"]
+[ext_resource type="Script" uid="uid://dvgsil3e0wqbo" path="res://scripts/environment/background_follow.gd" id="6_follow"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 
-[node name="BackgroundRings" parent="." instance=ExtResource("5_bg_rings")]
-script = ExtResource("8_follow")
-
-[node name="CloudLayers" parent="." instance=ExtResource("6_clouds")]
-script = ExtResource("8_follow")
-
-[node name="SkyDome" parent="." instance=ExtResource("7_sky")]
-script = ExtResource("8_follow")
+[node name="SkyDome" parent="." instance=ExtResource("5_sky")]
+script = ExtResource("6_follow")
 
 [node name="ChunkManager" parent="." instance=ExtResource("3_chunk_manager")]
 
@@ -53,3 +45,37 @@ offset_left = 10.0
 offset_top = 35.0
 offset_right = 300.0
 offset_bottom = 250.0
+
+[node name="SystemLabel" type="Label" parent="UI"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = -80.0
+offset_right = 500.0
+offset_bottom = -10.0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "CPU | RAM | GPU | VRAM"
+
+[node name="RenderLabel" type="Label" parent="UI"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -400.0
+offset_top = -80.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+text = "Chunks | Sprites | Draw Calls"
+horizontal_alignment = 2
