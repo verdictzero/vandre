@@ -7,8 +7,8 @@ uniform float uv_scale : hint_range(0.1, 10.0) = 1.0;
 global uniform vec4 ambient_tint : source_color;
 global uniform vec4 fog_color : source_color;
 
-const float FOG_START = 60.0;
-const float FOG_END = 96.0;
+const float FOG_START = 40.0;
+const float FOG_END = 128.0;
 
 void fragment() {
 	vec2 uv = UV * uv_scale;

@@ -58,13 +58,13 @@ func _spawn_vegetation() -> void:
 
 	# Spawn trees (sparse) - tree.tga is 384x512, taller than wide
 	# Scale is height in world units
-	var tree_count := _rng.randi_range(3, 8)
+	var tree_count := _rng.randi_range(6, 16)
 	for i in tree_count:
 		var height := _rng.randf_range(6.0, 10.0)
 		_spawn_billboard(tree_texture, height)
 
 	# Spawn bushes (medium density) - bush.tga is 128x96, wider than tall
-	var bush_count := _rng.randi_range(8, 15)
+	var bush_count := _rng.randi_range(16, 30)
 	for i in bush_count:
 		var height := _rng.randf_range(1.0, 2.0)
 		_spawn_billboard(bush_texture, height)

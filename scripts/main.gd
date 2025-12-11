@@ -5,8 +5,6 @@ extends Node3D
 @onready var chunk_manager: Node3D = $ChunkManager
 @onready var day_night_controller: Node = $DayNightController
 @onready var debug_label: Label = $UI/DebugLabel
-@onready var fps_label: Label = $UI/FPSLabel
-@onready var time_label: Label = $UI/TimeLabel
 @onready var system_label: Label = $UI/SystemLabel
 @onready var render_label: Label = $UI/RenderLabel
 
@@ -28,20 +26,22 @@ func _ready() -> void:
 	# Cache static system info
 	_system_info = "%s | %s" % [OS.get_name(), Engine.get_architecture_name()]
 
-	# Apply shadow styling to all labels
-	_apply_label_shadow(fps_label)
-	_apply_label_shadow(time_label)
-	_apply_label_shadow(debug_label)
-	fps_label.add_theme_font_size_override("font_size", 12)
-	time_label.add_theme_font_size_override("font_size", 12)
-	debug_label.add_theme_font_size_override("font_size", 12)
+	# Apply styling to debug labels with Roboto Mono
+	var font_bold := load("res://assets/fonts/Jersey_10,Roboto_Mono/Roboto_Mono/static/RobotoMono-Bold.ttf")
+	var font_medium := load("res://assets/fonts/Jersey_10,Roboto_Mono/Roboto_Mono/static/RobotoMono-Medium.ttf")
+	var font_regular := load("res://assets/fonts/Jersey_10,Roboto_Mono/Roboto_Mono/static/RobotoMono-Regular.ttf")
+	_apply_label_style(debug_label, font_bold, 12)
+	_apply_label_style(system_label, font_medium, 11)
+	_apply_label_style(render_label, font_regular, 11)
 
 	# Connect to gamepad manager signals
 	if GamepadManager:
 		GamepadManager.gamepad_connected.connect(_on_gamepad_connected)
 		GamepadManager.gamepad_disconnected.connect(_on_gamepad_disconnected)
 
-func _apply_label_shadow(label: Label) -> void:
+func _apply_label_style(label: Label, font: Font, size: int) -> void:
+	label.add_theme_font_override("font", font)
+	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	label.add_theme_constant_override("shadow_offset_x", 1)
 	label.add_theme_constant_override("shadow_offset_y", 1)
@@ -53,8 +53,6 @@ func _on_gamepad_disconnected(device_id: int) -> void:
 	print("Gamepad disconnected: %d" % device_id)
 
 func _process(_delta: float) -> void:
-	fps_label.text = "FPS: %d" % Engine.get_frames_per_second()
-	time_label.text = day_night_controller.get_time_string()
 	if _debug_visible:
 		_update_debug_label()
 
