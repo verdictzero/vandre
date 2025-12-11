@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bjgxwnbarmafa"]
+[gd_scene load_steps=8 format=3 uid="uid://bjgxwnbarmafa"]
 
 [ext_resource type="Script" uid="uid://bumfte6tc0uc6" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" uid="uid://cjqy6xh8kg5wl" path="res://scenes/player/player.tscn" id="2_player"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bblpok3e7qb1x" path="res://scenes/environment/day_night_controller.tscn" id="4_day_night"]
 [ext_resource type="PackedScene" uid="uid://lpnlde6qa0x" path="res://scenes/environment/sky_dome.tscn" id="5_sky"]
 [ext_resource type="Script" uid="uid://dvgsil3e0wqbo" path="res://scripts/environment/background_follow.gd" id="6_follow"]
+[ext_resource type="Script" path="res://scripts/Dither.gd" id="7_dither"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -19,7 +20,11 @@ script = ExtResource("6_follow")
 
 [node name="DayNightController" parent="." instance=ExtResource("4_day_night")]
 
+[node name="Dither" type="CanvasLayer" parent="."]
+script = ExtResource("7_dither")
+
 [node name="UI" type="CanvasLayer" parent="."]
+layer = 10
 
 [node name="DebugLabel" type="Label" parent="UI"]
 offset_left = 10.0
