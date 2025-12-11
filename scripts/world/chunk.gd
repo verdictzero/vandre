@@ -1,27 +1,47 @@
 extends Node3D
-## Terrain chunk with vegetation spawning
+## Terrain chunk with vegetation spawning using tree lifecycle distribution
 
 const CHUNK_SIZE: float = 64.0
 const BILLBOARD_SCENE = preload("res://scenes/world/billboard_sprite.tscn")
+
+# Configurable cluster settings
+const CLUSTERS_MIN: int = 2
+const CLUSTERS_MAX: int = 5
+
+# Tree lifecycle stages (innermost to outermost)
+# Each entry: [texture, height_min, height_max, radius_min, radius_max, count_min, count_max]
+const LIFECYCLE_STAGES = [
+	# Stage 0: Adult Large (center parent tree)
+	{"name": "adult_large", "height": [10.0, 14.0], "radius": [0.0, 0.0], "count": [1, 1]},
+	# Stage 1: Adult Medium (close to parent)
+	{"name": "adult_medium", "height": [7.0, 10.0], "radius": [3.0, 7.0], "count": [1, 3]},
+	# Stage 2: Sapling Large (outermost for now)
+	{"name": "sapling_large", "height": [4.0, 6.0], "radius": [6.0, 12.0], "count": [2, 5]},
+]
 
 var chunk_coord: Vector2i = Vector2i.ZERO
 var _terrain_mesh: MeshInstance3D
 var _vegetation: Array[Node3D] = []
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
-# Vegetation textures (loaded once)
-static var tree_texture: Texture2D
-static var bush_texture: Texture2D
+# Tree lifecycle textures (loaded once)
+static var _textures: Dictionary = {}
+static var _textures_loaded: bool = false
 
 func _ready() -> void:
 	_setup_terrain()
 	_load_textures()
 
 static func _load_textures() -> void:
-	if not tree_texture:
-		tree_texture = load("res://assets/textures/sprites/tree.tga")
-	if not bush_texture:
-		bush_texture = load("res://assets/textures/sprites/bush.tga")
+	if _textures_loaded:
+		return
+	var base_path := "res://assets/textures/sprites/tree_type_A/"
+	_textures["adult_large"] = load(base_path + "tree_adult_large.png")
+	_textures["adult_medium"] = load(base_path + "tree_adult_medium.png")
+	_textures["sapling_large"] = load(base_path + "tree_sapling_large.png")
+	_textures["sapling_small"] = load(base_path + "tree_sapling_small.png")
+	_textures["seedling"] = load(base_path + "tree_seedling.png")
+	_textures_loaded = true
 
 func _setup_terrain() -> void:
 	_terrain_mesh = MeshInstance3D.new()
@@ -56,32 +76,55 @@ func initialize(coord: Vector2i) -> void:
 func _spawn_vegetation() -> void:
 	_load_textures()
 
-	# Spawn trees (sparse) - tree.tga is 384x512, taller than wide
-	# Scale is height in world units
-	var tree_count := _rng.randi_range(6, 16)
-	for i in tree_count:
-		var height := _rng.randf_range(6.0, 10.0)
-		_spawn_billboard(tree_texture, height)
+	# Determine number of tree clusters for this chunk
+	var cluster_count := _rng.randi_range(CLUSTERS_MIN, CLUSTERS_MAX)
+	var half_size := CHUNK_SIZE / 2.0 - 5.0  # Margin for cluster spread
 
-	# Spawn bushes (medium density) - bush.tga is 128x96, wider than tall
-	var bush_count := _rng.randi_range(16, 30)
-	for i in bush_count:
-		var height := _rng.randf_range(1.0, 2.0)
-		_spawn_billboard(bush_texture, height)
+	# Spawn each cluster
+	for _c in cluster_count:
+		# Random cluster center position
+		var cluster_center := Vector2(
+			_rng.randf_range(-half_size, half_size),
+			_rng.randf_range(-half_size, half_size)
+		)
+		_spawn_tree_cluster(cluster_center)
 
-func _spawn_billboard(tex: Texture2D, height: float) -> void:
+func _spawn_tree_cluster(center: Vector2) -> void:
+	# Spawn trees for each lifecycle stage radiating outward
+	for stage in LIFECYCLE_STAGES:
+		var tex: Texture2D = _textures[stage["name"]]
+		var height_range: Array = stage["height"]
+		var radius_range: Array = stage["radius"]
+		var count_range: Array = stage["count"]
+
+		var tree_count := _rng.randi_range(count_range[0], count_range[1])
+
+		for _i in tree_count:
+			# Random angle for radial distribution
+			var angle := _rng.randf() * TAU
+			# Random radius within stage's range (with some scatter)
+			var radius := _rng.randf_range(radius_range[0], radius_range[1])
+			# Add natural scatter/jitter
+			radius += _rng.randf_range(-1.5, 1.5)
+			radius = max(0.0, radius)
+
+			# Calculate position
+			var offset := Vector2(cos(angle), sin(angle)) * radius
+			var pos := center + offset
+
+			# Random height within stage's range
+			var height := _rng.randf_range(height_range[0], height_range[1])
+
+			_spawn_billboard_at(tex, height, Vector3(pos.x, 0, pos.y))
+
+func _spawn_billboard_at(tex: Texture2D, height: float, pos: Vector3) -> void:
 	var billboard: Node3D = BILLBOARD_SCENE.instantiate()
 	add_child(billboard)
 
-	# Random position within chunk bounds
-	var half_size := CHUNK_SIZE / 2.0 - 2.0  # Slight margin
-	var x := _rng.randf_range(-half_size, half_size)
-	var z := _rng.randf_range(-half_size, half_size)
-
 	# Y position: half the height (quad is centered, so offset to sit on ground)
-	var y := height * 0.5
+	pos.y = height * 0.5
 
-	billboard.position = Vector3(x, y, z)
+	billboard.position = pos
 	billboard.set_texture(tex)
 	billboard.set_scale_factor(height)
 
