@@ -4,25 +4,27 @@ extends Node3D
 const CHUNK_SIZE: float = 64.0
 const BILLBOARD_SCENE = preload("res://scenes/world/billboard_sprite.tscn")
 
-# Configurable cluster settings
-const CLUSTERS_MIN: int = 3
-const CLUSTERS_MAX: int = 6
+# Configurable cluster settings - reduced for more spacing between clumps
+const CLUSTERS_MIN: int = 2
+const CLUSTERS_MAX: int = 4
 const SPAWN_CLEAR_RADIUS: float = 20.0  # Treeless area around world origin
 
 # Size randomness factor (25% = 0.25)
 const SIZE_VARIANCE: float = 0.25
 
-# Foliage rings (innermost to outermost) - tight clusters
+# Foliage rings (innermost to outermost) - increased radius for more spacing within clumps
 # collision_radius is the cylinder collider radius for blocking player
 const FOLIAGE_RINGS = [
-	# Ring 0: Biggest tree (center) - 2x size, huge collider
-	{"name": "adult_large", "height": [24.0, 28.0], "radius": [0.0, 1.0], "count": [1, 1], "collision_radius": 8.0},
-	# Ring 1: Large trees (first ring) - 2x size, huge collider
-	{"name": "adult_medium", "height": [16.0, 20.0], "radius": [3.0, 6.0], "count": [1, 3], "collision_radius": 6.0},
-	# Ring 2: Medium trees (second ring) - 2x size, huge collider
-	{"name": "sapling_large", "height": [10.0, 14.0], "radius": [6.0, 10.0], "count": [2, 5], "collision_radius": 5.0},
-	# Ring 3: Bushes (outer ring) - no collider (passable), high density, varied size
-	{"name": "bush_a", "height": [1.0, 2.0], "radius": [8.0, 18.0], "count": [10, 20], "collision_radius": 0.0},
+	# Ring 0: Biggest tree (center)
+	{"name": "adult_large", "height": [24.0, 28.0], "radius": [0.0, 2.0], "count": [1, 1], "collision_radius": 8.0},
+	# Ring 1: Large trees (first ring) - more spread out
+	{"name": "adult_medium", "height": [16.0, 20.0], "radius": [6.0, 12.0], "count": [1, 2], "collision_radius": 6.0},
+	# Ring 2: Medium trees (second ring) - more spread out
+	{"name": "sapling_large", "height": [10.0, 14.0], "radius": [12.0, 20.0], "count": [2, 4], "collision_radius": 5.0},
+	# Ring 3: Bushes - no collider (passable)
+	{"name": "bush_a", "height": [1.0, 2.0], "radius": [16.0, 28.0], "count": [6, 12], "collision_radius": 0.0},
+	# Ring 4: Sparse grass (outermost) - no collider
+	{"name": "grass_a", "height": [0.5, 1.2], "radius": [24.0, 38.0], "count": [8, 16], "collision_radius": 0.0},
 ]
 
 var chunk_coord: Vector2i = Vector2i.ZERO
@@ -49,6 +51,9 @@ static func _load_textures() -> void:
 	# Bushes
 	_textures["bush_a"] = load(base_path + "bush_var_A.tga")
 	_textures["bush_b"] = load(base_path + "bush_var_B.tga")
+	# Grass
+	_textures["grass_a"] = load(base_path + "grass_var_A.tga")
+	_textures["grass_b"] = load(base_path + "grass_var_B.tga")
 	_textures_loaded = true
 
 func _setup_terrain() -> void:
@@ -86,7 +91,7 @@ func _spawn_vegetation() -> void:
 
 	# Determine number of tree clusters for this chunk
 	var cluster_count := _rng.randi_range(CLUSTERS_MIN, CLUSTERS_MAX)
-	var half_size := CHUNK_SIZE / 2.0 - 5.0  # Margin for cluster spread
+	var half_size := CHUNK_SIZE / 2.0 - 10.0  # Larger margin for more spread clumps
 
 	# Spawn each cluster
 	for _c in cluster_count:
@@ -100,11 +105,7 @@ func _spawn_vegetation() -> void:
 func _spawn_foliage_cluster(center: Vector2) -> void:
 	# Spawn foliage for each ring radiating outward
 	for ring in FOLIAGE_RINGS:
-		var tex_name: String = ring["name"]
-		# Randomly select bush variant
-		if tex_name == "bush_a":
-			tex_name = "bush_a" if _rng.randf() < 0.5 else "bush_b"
-		var tex: Texture2D = _textures[tex_name]
+		var base_tex_name: String = ring["name"]
 		var height_range: Array = ring["height"]
 		var radius_range: Array = ring["radius"]
 		var count_range: Array = ring["count"]
@@ -113,9 +114,17 @@ func _spawn_foliage_cluster(center: Vector2) -> void:
 		var foliage_count := _rng.randi_range(count_range[0], count_range[1])
 
 		for _i in foliage_count:
+			# Select texture variant per-sprite for bushes and grass
+			var tex_name := base_tex_name
+			if tex_name == "bush_a":
+				tex_name = "bush_a" if _rng.randf() < 0.5 else "bush_b"
+			elif tex_name == "grass_a":
+				tex_name = "grass_a" if _rng.randf() < 0.5 else "grass_b"
+			var tex: Texture2D = _textures[tex_name]
+
 			# Random angle for radial distribution
 			var angle := _rng.randf() * TAU
-			# Random radius within ring's range (tight, minimal scatter)
+			# Random radius within ring's range
 			var radius := _rng.randf_range(radius_range[0], radius_range[1])
 
 			# Calculate position

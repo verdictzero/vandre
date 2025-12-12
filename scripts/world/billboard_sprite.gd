@@ -17,6 +17,8 @@ var _material: ShaderMaterial
 func _ready() -> void:
 	_setup_mesh()
 	_update_material()
+	# Prevent early frustum culling at screen edges
+	extra_cull_margin = 20.0
 
 func _setup_mesh() -> void:
 	# Create a quad mesh with origin at bottom

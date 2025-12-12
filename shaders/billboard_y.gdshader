@@ -11,17 +11,17 @@ const float FOG_START = 40.0;
 const float FOG_END = 128.0;
 
 void vertex() {
-	// Y-axis billboard: rotate to face camera while keeping upright
-	vec3 cam_pos = (inverse(VIEW_MATRIX) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
-	vec3 to_cam = cam_pos - MODEL_MATRIX[3].xyz;
-	to_cam.y = 0.0; // Project onto XZ plane
-	to_cam = normalize(to_cam);
+	// Y-axis billboard: align to camera plane (not camera position)
+	// Get camera's forward direction (view direction) projected onto XZ plane
+	vec3 cam_forward = -vec3(VIEW_MATRIX[0][2], VIEW_MATRIX[1][2], VIEW_MATRIX[2][2]);
+	cam_forward.y = 0.0; // Project onto XZ plane
+	cam_forward = normalize(cam_forward);
 
 	vec3 up = vec3(0.0, 1.0, 0.0);
-	vec3 right = cross(up, to_cam);
+	vec3 right = cross(up, cam_forward);
 
 	// Reconstruct vertex position with billboard rotation
-	VERTEX = right * VERTEX.x + up * VERTEX.y + to_cam * VERTEX.z;
+	VERTEX = right * VERTEX.x + up * VERTEX.y + cam_forward * VERTEX.z;
 }
 
 void fragment() {

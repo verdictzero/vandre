@@ -8,8 +8,11 @@ extends Node3D
 @onready var system_label: Label = $UI/SystemLabel
 @onready var render_label: Label = $UI/RenderLabel
 
+const CompassBar = preload("res://scripts/ui/compass_bar.gd")
+
 var _debug_visible: bool = false
 var _system_info: String = ""
+var _compass: Control
 
 func _ready() -> void:
 	# Connect player to chunk manager
@@ -38,6 +41,12 @@ func _ready() -> void:
 	if GamepadManager:
 		GamepadManager.gamepad_connected.connect(_on_gamepad_connected)
 		GamepadManager.gamepad_disconnected.connect(_on_gamepad_disconnected)
+
+	# Create compass bar
+	_compass = Control.new()
+	_compass.set_script(CompassBar)
+	$UI.add_child(_compass)
+	_compass.set_player(player)
 
 func _apply_label_style(label: Label, font: Font, size: int) -> void:
 	label.add_theme_font_override("font", font)
