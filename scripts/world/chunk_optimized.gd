@@ -26,8 +26,8 @@ static func _load_resources() -> void:
 	if _resources_loaded:
 		return
 
-	_tree_texture = load("res://assets/textures/sprites/tree.tga")
-	_bush_texture = load("res://assets/textures/sprites/bush.tga")
+	_tree_texture = load("res://assets/textures/sprites/foliage/genocide_meadows/tree_really_big.tga")
+	_bush_texture = load("res://assets/textures/sprites/foliage/genocide_meadows/bush_var_A.tga")
 
 	# Create shared materials
 	var shader := load("res://shaders/billboard_y.gdshader")
@@ -42,7 +42,7 @@ static func _load_resources() -> void:
 
 	_terrain_material = ShaderMaterial.new()
 	_terrain_material.shader = load("res://shaders/unlit_terrain.gdshader")
-	_terrain_material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_checkered.tga"))
+	_terrain_material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_checkered.png"))
 	_terrain_material.set_shader_parameter("uv_scale", 8.0)
 
 	_resources_loaded = true

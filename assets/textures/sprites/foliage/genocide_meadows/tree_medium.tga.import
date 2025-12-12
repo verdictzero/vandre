@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://df2wt2lxb238t"
-path="res://.godot/imported/tree_sapling_large.png-229f1e2bac12f2a808e58f7f6cf2b85d.ctex"
+uid="uid://d3uoddej1lchi"
+path="res://.godot/imported/tree_medium.tga-cd397fa1e8b676183af6e221042c03d2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/sprites/tree_type_A/tree_sapling_large.png"
-dest_files=["res://.godot/imported/tree_sapling_large.png-229f1e2bac12f2a808e58f7f6cf2b85d.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/tree_medium.tga"
+dest_files=["res://.godot/imported/tree_medium.tga-cd397fa1e8b676183af6e221042c03d2.ctex"]
 
 [params]
 

@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cp2crooxjje4q"
-path.etc2="res://.godot/imported/treeline_placeholder.png-fc5bf5f63bef2379daa0774ae6566f8b.etc2.ctex"
+uid="uid://c3ni7yobupq14"
+path="res://.godot/imported/tree_really_big.tga-1c20a2aa5bec312d9a94dcf8d4cd69c0.ctex"
 metadata={
-"imported_formats": ["etc2_astc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/backgrounds/treeline_placeholder.png"
-dest_files=["res://.godot/imported/treeline_placeholder.png-fc5bf5f63bef2379daa0774ae6566f8b.etc2.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/tree_really_big.tga"
+dest_files=["res://.godot/imported/tree_really_big.tga-1c20a2aa5bec312d9a94dcf8d4cd69c0.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -24,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -38,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

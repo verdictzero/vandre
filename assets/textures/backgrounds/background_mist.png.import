@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8bqt47a7ac88"
-path="res://.godot/imported/tree_adult_large.png-cb4e2b0ce940444d356c352423bd3d8a.ctex"
+uid="uid://cord5dlqf6s2b"
+path="res://.godot/imported/background_mist.png-af8db75aec2a51f7963d3321711d9c2f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/sprites/tree_type_A/tree_adult_large.png"
-dest_files=["res://.godot/imported/tree_adult_large.png-cb4e2b0ce940444d356c352423bd3d8a.ctex"]
+source_file="res://assets/textures/backgrounds/background_mist.png"
+dest_files=["res://.godot/imported/background_mist.png-af8db75aec2a51f7963d3321711d9c2f.ctex"]
 
 [params]
 

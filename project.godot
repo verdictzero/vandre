@@ -20,8 +20,8 @@ GamepadManager="*res://scripts/input/gamepad_manager.gd"
 
 [display]
 
-window/size/viewport_width=800
-window/size/viewport_height=600
+window/size/viewport_width=640
+window/size/viewport_height=480
 
 [input]
 
@@ -142,4 +142,8 @@ ambient_tint={
 time_of_day={
 "type": "float",
 "value": 12.0
+}
+player_position={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
 }

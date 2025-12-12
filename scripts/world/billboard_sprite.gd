@@ -19,10 +19,12 @@ func _ready() -> void:
 	_update_material()
 
 func _setup_mesh() -> void:
-	# Create a quad mesh
+	# Create a quad mesh with origin at bottom
 	var quad := QuadMesh.new()
-	quad.size = _calculate_size()
+	var size := _calculate_size()
+	quad.size = size
 	quad.orientation = PlaneMesh.FACE_Z
+	quad.center_offset = Vector3(0, size.y / 2.0, 0)  # Origin at bottom
 	mesh = quad
 
 func _calculate_size() -> Vector2:
@@ -36,7 +38,9 @@ func _calculate_size() -> Vector2:
 
 func _update_mesh_size() -> void:
 	if mesh and mesh is QuadMesh:
-		(mesh as QuadMesh).size = _calculate_size()
+		var size := _calculate_size()
+		(mesh as QuadMesh).size = size
+		(mesh as QuadMesh).center_offset = Vector3(0, size.y / 2.0, 0)  # Origin at bottom
 
 func _update_material() -> void:
 	if not _material:

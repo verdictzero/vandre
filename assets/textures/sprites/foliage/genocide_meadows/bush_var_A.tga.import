@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://75cvpeiapgea"
-path="res://.godot/imported/bush_placeholder.png-c66e6fe871af11baabfeba64cb1aae92.ctex"
+uid="uid://qispnobg2l1o"
+path="res://.godot/imported/bush_var_A.tga-fa5a54e4b8156d58d8a1229c9ec66a14.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/sprites/bush_placeholder.png"
-dest_files=["res://.godot/imported/bush_placeholder.png-c66e6fe871af11baabfeba64cb1aae92.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/bush_var_A.tga"
+dest_files=["res://.godot/imported/bush_var_A.tga-fa5a54e4b8156d58d8a1229c9ec66a14.ctex"]
 
 [params]
 

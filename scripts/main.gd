@@ -53,6 +53,9 @@ func _on_gamepad_disconnected(device_id: int) -> void:
 	print("Gamepad disconnected: %d" % device_id)
 
 func _process(_delta: float) -> void:
+	# Update player position for foliage dither fade
+	RenderingServer.global_shader_parameter_set("player_position", player.global_position)
+
 	if _debug_visible:
 		_update_debug_label()
 

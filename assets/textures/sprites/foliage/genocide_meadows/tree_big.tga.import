@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2wulj6qyfy8t"
-path="res://.godot/imported/tree.tga-ce24f2eb2ae40af980956ea515b8dbd7.ctex"
+uid="uid://e4jmli7sbnu7"
+path="res://.godot/imported/tree_big.tga-2ac07a0555af6dd0db3e317b430b2eec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/sprites/tree.tga"
-dest_files=["res://.godot/imported/tree.tga-ce24f2eb2ae40af980956ea515b8dbd7.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/tree_big.tga"
+dest_files=["res://.godot/imported/tree_big.tga-2ac07a0555af6dd0db3e317b430b2eec.ctex"]
 
 [params]
 

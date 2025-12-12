@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4mka5rxvqn3c"
-path="res://.godot/imported/tree_seedling.png-e223908db95adbbaed830793dab211c7.ctex"
+uid="uid://b6l3lxdjyrwbe"
+path="res://.godot/imported/grass_var_A.tga-2bf7f7b499563d049ac911022a65828e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/sprites/tree_type_A/tree_seedling.png"
-dest_files=["res://.godot/imported/tree_seedling.png-e223908db95adbbaed830793dab211c7.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/grass_var_A.tga"
+dest_files=["res://.godot/imported/grass_var_A.tga-2bf7f7b499563d049ac911022a65828e.ctex"]
 
 [params]
 

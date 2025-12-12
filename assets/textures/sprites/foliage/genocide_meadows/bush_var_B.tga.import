@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5fwvc8rptjv5"
-path="res://.godot/imported/grass_placeholder.png-908cbeca29f402b4c0b859117a4aeab4.ctex"
+uid="uid://j0kb8va2fddt"
+path="res://.godot/imported/bush_var_B.tga-23b4acce3c14360c05aa18f0ec90d6ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/terrain/grass_placeholder.png"
-dest_files=["res://.godot/imported/grass_placeholder.png-908cbeca29f402b4c0b859117a4aeab4.ctex"]
+source_file="res://assets/textures/sprites/foliage/genocide_meadows/bush_var_B.tga"
+dest_files=["res://.godot/imported/bush_var_B.tga-23b4acce3c14360c05aa18f0ec90d6ee.ctex"]
 
 [params]
 

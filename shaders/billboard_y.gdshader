@@ -41,5 +41,5 @@ void fragment() {
 
 	// Blend with fog
 	ALBEDO = mix(color, fog_color.rgb, fog_factor);
-	ALPHA = 1.0;  // Alpha clip - no variable transparency
+	ALPHA = 1.0;
 }
