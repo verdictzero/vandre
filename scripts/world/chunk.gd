@@ -1,60 +1,21 @@
 extends Node3D
-## Terrain chunk with vegetation spawning using tight cluster distribution
+## Terrain chunk with vegetation spawning based on biome configuration
 
 const CHUNK_SIZE: float = 64.0
 const BILLBOARD_SCENE = preload("res://scenes/world/billboard_sprite.tscn")
-
-# Configurable cluster settings - reduced for more spacing between clumps
-const CLUSTERS_MIN: int = 2
-const CLUSTERS_MAX: int = 4
-const SPAWN_CLEAR_RADIUS: float = 20.0  # Treeless area around world origin
-
-# Size randomness factor (25% = 0.25)
-const SIZE_VARIANCE: float = 0.25
-
-# Foliage rings (innermost to outermost) - increased radius for more spacing within clumps
-# collision_radius is the cylinder collider radius for blocking player
-const FOLIAGE_RINGS = [
-	# Ring 0: Biggest tree (center)
-	{"name": "adult_large", "height": [24.0, 28.0], "radius": [0.0, 2.0], "count": [1, 1], "collision_radius": 8.0},
-	# Ring 1: Large trees (first ring) - more spread out
-	{"name": "adult_medium", "height": [16.0, 20.0], "radius": [6.0, 12.0], "count": [1, 2], "collision_radius": 6.0},
-	# Ring 2: Medium trees (second ring) - more spread out
-	{"name": "sapling_large", "height": [10.0, 14.0], "radius": [12.0, 20.0], "count": [2, 4], "collision_radius": 5.0},
-	# Ring 3: Bushes - no collider (passable)
-	{"name": "bush_a", "height": [1.0, 2.0], "radius": [16.0, 28.0], "count": [6, 12], "collision_radius": 0.0},
-	# Ring 4: Sparse grass (outermost) - no collider
-	{"name": "grass_a", "height": [0.5, 1.2], "radius": [24.0, 38.0], "count": [8, 16], "collision_radius": 0.0},
-]
 
 var chunk_coord: Vector2i = Vector2i.ZERO
 var _terrain_mesh: MeshInstance3D
 var _vegetation: Array[Node3D] = []
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
-
-# Tree lifecycle textures (loaded once)
-static var _textures: Dictionary = {}
-static var _textures_loaded: bool = false
+var _biome: BiomeData
+var _biome_manager: BiomeManager
 
 func _ready() -> void:
 	_setup_terrain()
-	_load_textures()
 
-static func _load_textures() -> void:
-	if _textures_loaded:
-		return
-	var base_path := "res://assets/textures/sprites/foliage/genocide_meadows/"
-	# Trees
-	_textures["adult_large"] = load(base_path + "tree_really_big.tga")
-	_textures["adult_medium"] = load(base_path + "tree_big.tga")
-	_textures["sapling_large"] = load(base_path + "tree_medium.tga")
-	# Bushes
-	_textures["bush_a"] = load(base_path + "bush_var_A.tga")
-	_textures["bush_b"] = load(base_path + "bush_var_B.tga")
-	# Grass
-	_textures["grass_a"] = load(base_path + "grass_var_A.tga")
-	_textures["grass_b"] = load(base_path + "grass_var_B.tga")
-	_textures_loaded = true
+func set_biome_manager(manager: BiomeManager) -> void:
+	_biome_manager = manager
 
 func _setup_terrain() -> void:
 	_terrain_mesh = MeshInstance3D.new()
@@ -67,14 +28,22 @@ func _setup_terrain() -> void:
 	plane.subdivide_depth = 0
 	_terrain_mesh.mesh = plane
 
-	# Create material
+func _apply_biome_terrain() -> void:
+	if not _biome or not _biome_manager:
+		return
+
+	# Create material with biome's ground texture
 	var material := ShaderMaterial.new()
 	material.shader = load("res://shaders/unlit_terrain.gdshader")
-	material.set_shader_parameter("albedo_texture", load("res://assets/textures/terrain/grass_checkered.png"))
-	material.set_shader_parameter("uv_scale", 8.0)
+
+	var ground_tex := _biome_manager.get_texture(_biome.ground_texture)
+	if ground_tex:
+		material.set_shader_parameter("albedo_texture", ground_tex)
+	material.set_shader_parameter("uv_scale", _biome.ground_uv_scale)
+
 	_terrain_mesh.material_override = material
 
-func initialize(coord: Vector2i) -> void:
+func initialize(coord: Vector2i, biome: BiomeData = null) -> void:
 	chunk_coord = coord
 
 	# Position chunk in world space
@@ -83,15 +52,23 @@ func initialize(coord: Vector2i) -> void:
 	# Seed RNG based on chunk coordinate for deterministic spawning
 	_rng.seed = hash(coord)
 
-	# Spawn vegetation
-	_spawn_vegetation()
+	# Set biome (use provided or get from manager based on position)
+	if biome:
+		_biome = biome
+	elif _biome_manager:
+		_biome = _biome_manager.get_biome_for_position(position)
+
+	if _biome:
+		_apply_biome_terrain()
+		_spawn_vegetation()
 
 func _spawn_vegetation() -> void:
-	_load_textures()
+	if not _biome or not _biome_manager:
+		return
 
 	# Determine number of tree clusters for this chunk
-	var cluster_count := _rng.randi_range(CLUSTERS_MIN, CLUSTERS_MAX)
-	var half_size := CHUNK_SIZE / 2.0 - 10.0  # Larger margin for more spread clumps
+	var cluster_count := _rng.randi_range(_biome.clusters_min, _biome.clusters_max)
+	var half_size := CHUNK_SIZE / 2.0 - _biome.cluster_margin
 
 	# Spawn each cluster
 	for _c in cluster_count:
@@ -104,47 +81,42 @@ func _spawn_vegetation() -> void:
 
 func _spawn_foliage_cluster(center: Vector2) -> void:
 	# Spawn foliage for each ring radiating outward
-	for ring in FOLIAGE_RINGS:
-		var base_tex_name: String = ring["name"]
-		var height_range: Array = ring["height"]
-		var radius_range: Array = ring["radius"]
-		var count_range: Array = ring["count"]
-		var collision_radius: float = ring["collision_radius"]
-
-		var foliage_count := _rng.randi_range(count_range[0], count_range[1])
+	for ring in _biome.foliage_rings:
+		var foliage_count := _rng.randi_range(ring.count_min, ring.count_max)
 
 		for _i in foliage_count:
-			# Select texture variant per-sprite for bushes and grass
-			var tex_name := base_tex_name
-			if tex_name == "bush_a":
-				tex_name = "bush_a" if _rng.randf() < 0.5 else "bush_b"
-			elif tex_name == "grass_a":
-				tex_name = "grass_a" if _rng.randf() < 0.5 else "grass_b"
-			var tex: Texture2D = _textures[tex_name]
+			# Select texture (main or variant)
+			var tex_path := ring.texture_path
+			if ring.variants.size() > 0 and _rng.randf() < 0.5:
+				tex_path = ring.variants[_rng.randi() % ring.variants.size()]
+
+			var tex := _biome_manager.get_texture(tex_path)
+			if not tex:
+				continue
 
 			# Random angle for radial distribution
 			var angle := _rng.randf() * TAU
 			# Random radius within ring's range
-			var radius := _rng.randf_range(radius_range[0], radius_range[1])
+			var radius := _rng.randf_range(ring.radius_min, ring.radius_max)
 
 			# Calculate position
 			var offset := Vector2(cos(angle), sin(angle)) * radius
 			var pos := center + offset
 
-			# Base height with 25% randomness
-			var base_height := _rng.randf_range(height_range[0], height_range[1])
-			var scale_factor := 1.0 + _rng.randf_range(-SIZE_VARIANCE, SIZE_VARIANCE)
+			# Base height with variance
+			var base_height := _rng.randf_range(ring.height_min, ring.height_max)
+			var scale_factor := 1.0 + _rng.randf_range(-ring.size_variance, ring.size_variance)
 			var final_height := base_height * scale_factor
 
 			# Scale collision radius proportionally
-			var final_collision_radius := collision_radius * scale_factor
+			var final_collision_radius := ring.collision_radius * scale_factor
 
 			_spawn_billboard_at(tex, final_height, Vector3(pos.x, 0, pos.y), final_collision_radius)
 
 func _spawn_billboard_at(tex: Texture2D, height: float, pos: Vector3, collision_radius: float) -> void:
 	# Check if too close to world origin (player spawn)
 	var world_pos := position + pos
-	if Vector2(world_pos.x, world_pos.z).length() < SPAWN_CLEAR_RADIUS:
+	if Vector2(world_pos.x, world_pos.z).length() < _biome.spawn_clear_radius:
 		return
 
 	var billboard: Node3D = BILLBOARD_SCENE.instantiate()
@@ -186,3 +158,6 @@ func _clear_vegetation() -> void:
 
 func get_chunk_coord() -> Vector2i:
 	return chunk_coord
+
+func get_biome() -> BiomeData:
+	return _biome

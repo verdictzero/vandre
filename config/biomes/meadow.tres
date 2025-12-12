@@ -1,0 +1,90 @@
+[gd_resource type="Resource" script_class="BiomeData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/biome_data.gd" id="1_biome"]
+[ext_resource type="Script" path="res://scripts/world/foliage_ring.gd" id="2_ring"]
+
+[sub_resource type="Resource" id="ring_adult_large"]
+script = ExtResource("2_ring")
+name = "adult_large"
+texture_path = "res://assets/textures/sprites/foliage/genocide_meadows/tree_really_big.tga"
+variants = []
+height_min = 24.0
+height_max = 28.0
+size_variance = 0.25
+radius_min = 0.0
+radius_max = 2.0
+count_min = 1
+count_max = 1
+collision_radius = 8.0
+
+[sub_resource type="Resource" id="ring_adult_medium"]
+script = ExtResource("2_ring")
+name = "adult_medium"
+texture_path = "res://assets/textures/sprites/foliage/genocide_meadows/tree_big.tga"
+variants = []
+height_min = 16.0
+height_max = 20.0
+size_variance = 0.25
+radius_min = 6.0
+radius_max = 12.0
+count_min = 1
+count_max = 2
+collision_radius = 6.0
+
+[sub_resource type="Resource" id="ring_sapling"]
+script = ExtResource("2_ring")
+name = "sapling_large"
+texture_path = "res://assets/textures/sprites/foliage/genocide_meadows/tree_medium.tga"
+variants = []
+height_min = 10.0
+height_max = 14.0
+size_variance = 0.25
+radius_min = 12.0
+radius_max = 20.0
+count_min = 2
+count_max = 4
+collision_radius = 5.0
+
+[sub_resource type="Resource" id="ring_bush"]
+script = ExtResource("2_ring")
+name = "bush"
+texture_path = "res://assets/textures/sprites/foliage/genocide_meadows/bush_var_A.tga"
+variants = ["res://assets/textures/sprites/foliage/genocide_meadows/bush_var_B.tga"]
+height_min = 1.0
+height_max = 2.0
+size_variance = 0.25
+radius_min = 16.0
+radius_max = 28.0
+count_min = 6
+count_max = 12
+collision_radius = 0.0
+
+[sub_resource type="Resource" id="ring_grass"]
+script = ExtResource("2_ring")
+name = "grass"
+texture_path = "res://assets/textures/sprites/foliage/genocide_meadows/grass_var_A.tga"
+variants = ["res://assets/textures/sprites/foliage/genocide_meadows/grass_var_B.tga"]
+height_min = 0.5
+height_max = 1.2
+size_variance = 0.25
+radius_min = 24.0
+radius_max = 38.0
+count_min = 8
+count_max = 16
+collision_radius = 0.0
+
+[resource]
+script = ExtResource("1_biome")
+biome_name = "Meadow"
+biome_id = "meadow"
+ground_texture = "res://assets/textures/terrain/grass_checkered.png"
+ground_uv_scale = 8.0
+foliage_rings = [SubResource("ring_adult_large"), SubResource("ring_adult_medium"), SubResource("ring_sapling"), SubResource("ring_bush"), SubResource("ring_grass")]
+clusters_min = 2
+clusters_max = 4
+cluster_margin = 10.0
+fog_color = Color(0.7, 0.75, 0.8, 1)
+ambient_tint = Color(1, 1, 1, 1)
+fog_start = 40.0
+fog_end = 128.0
+spawn_clear_radius = 20.0

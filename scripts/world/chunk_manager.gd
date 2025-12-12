@@ -5,13 +5,20 @@ const CHUNK_SIZE: float = 64.0
 const VIEW_DISTANCE: int = 2  # 5x5 grid = 25 chunks (1.5x increased)
 
 const ChunkScript = preload("res://scripts/world/chunk.gd")
+const BiomeManagerScript = preload("res://scripts/world/biome_manager.gd")
 
 var player: Node3D
 var _active_chunks: Dictionary = {}  # Vector2i -> Node3D
 var _chunk_pool: Array[Node3D] = []
 var _last_player_chunk: Vector2i = Vector2i(999999, 999999)  # Invalid initial value
+var _biome_manager: BiomeManager
 
 func _ready() -> void:
+	# Create biome manager
+	_biome_manager = BiomeManager.new()
+	_biome_manager.set_script(BiomeManagerScript)
+	add_child(_biome_manager)
+
 	# Pre-create some chunks for the pool
 	for i in range(25):
 		var chunk := _create_new_chunk()
@@ -63,6 +70,7 @@ func _update_chunks(center: Vector2i) -> void:
 	for coord in needed_coords:
 		if coord not in _active_chunks:
 			var chunk := _get_or_create_chunk()
+			chunk.set_biome_manager(_biome_manager)
 			chunk.initialize(coord)
 			chunk.activate()
 			_active_chunks[coord] = chunk
@@ -83,3 +91,6 @@ func get_active_chunk_count() -> int:
 
 func get_player_chunk_coord() -> Vector2i:
 	return _last_player_chunk
+
+func get_biome_manager() -> BiomeManager:
+	return _biome_manager
